@@ -174,7 +174,7 @@
         }
         
         let json = importData;
-        let character = JSON.parse(json).character;
+        let character = JSON.parse(json).data;
 
         sendChat(script_name, '<div style="'+style+'">Import of <b>' + character.name + '</b> is starting.</div>', null, {noarchive:true});
 
