@@ -621,7 +621,7 @@
                     attributes["repeating_inventory_"+row+"_itemweight"] = (item.definition.bundleSize != 0 ? item.definition.weight / item.definition.bundleSize : item.definition.weight);
                     attributes["repeating_inventory_"+row+"_itemcontent"] = replaceChars(item.definition.description);
                     let _itemmodifiers = 'Item Type: ' + item.definition.type;
-                    if(typeof item.definition.damage === 'object' && item.definition.type !== 'Ammunition') {
+                    if(item.definition.damage !== null && item.definition.type !== 'Ammunition') {
                         let properties = '';
                         let finesse = false;
                         let twohanded = false;
@@ -630,24 +630,25 @@
                         let isOffhand = false;
                         let versatile = false;
                         let versatileDice = '';
-                        item.definition.properties.forEach((prop) => {
-                            if(prop.name == 'Two-Handed') {
-                                twohanded = true;
-                            }
-                            if(prop.name == 'Range') {
-                                ranged = true;
-                            }
-                            if(prop.name == 'Finesse') {
-                                finesse = true;
-                            }
-                            if(prop.name == 'Versatile') {
-                                versatile = true;
-                                versatileDice = prop.notes;
-                            }
+                        if (item.definition.properties !== null) {
+                            item.definition.properties.forEach((prop) => {
+                                if(prop.name == 'Two-Handed') {
+                                    twohanded = true;
+                                }
+                                if(prop.name == 'Range') {
+                                    ranged = true;
+                                }
+                                if(prop.name == 'Finesse') {
+                                    finesse = true;
+                                }
+                                if(prop.name == 'Versatile') {
+                                    versatile = true;
+                                    versatileDice = prop.notes;
+                                }
 
-                            properties += prop.name + ', ';
-                        });
-
+                                properties += prop.name + ', ';
+                            });
+                        }
                         let cv = getObjects(character.characterValues, 'valueTypeId', item.entityTypeId);
                         cv.forEach((v) => {
                             if(v.typeId == 18 && v.value === true) {
@@ -670,11 +671,12 @@
                         });
 
                         // Finesse Weapon
-                        let isFinesse = item.definition.properties.filter((property) => { return property.name == 'Finesse'; }).length > 0;
-                        if(isFinesse && getTotalAbilityScore(character, 2) > getTotalAbilityScore(character, item.definition.attackType)) {
-                            item.definition.attackType = 2;
+                        if (item.definition.properties !== null) {
+                            let isFinesse = item.definition.properties.filter((property) => { return property.name == 'Finesse'; }).length > 0;
+                            if(isFinesse && getTotalAbilityScore(character, 2) > getTotalAbilityScore(character, item.definition.attackType)) {
+                                item.definition.attackType = 2;
+                            }
                         }
-
                         // Hexblade's Weapon
                         let characterValues = getObjects(character.characterValues, 'valueId', item.id);
                         characterValues.forEach((cv) => {
